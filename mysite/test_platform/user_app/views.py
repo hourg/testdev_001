@@ -29,5 +29,8 @@ def login_action(request):
             else:
                 return render(request, "index.html",
                               {"error": "用户名或者密码错误"})
+    else:
+        return render(request, "index.html",)
+
 
  
