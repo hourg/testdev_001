@@ -1,25 +1,33 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-# Create your views here.
-#主要代码逻辑
+from django.contrib import auth
 
 
+# 首页
 def index(request):
-
     return render(request, "index.html")
 
-#处理登录请求
+
+# 处理登录请求
 def login_action(request):
-    if request.method == "GET":
-     username = request.GET.get("username","")
-     password = request.GET.get("password","")
-     if username == "" or password == "":
-         return render(request, "index.html",
-                       {"error":"请输入用户名和密码"})
-     if username=='aaa' and password=='bbb':
-         return HttpResponse('{},欢迎！'.format(username))
-     if username !='aaa' or password!='bbb':
-         return render(request,"index.html",
-                       {"error": "用户名或密码错误,请重新输入"})
+    if request.method == "POST":
+        username = request.POST.get("username", "")
+        password = request.POST.get("password", "")
 
+        if username == "" or password == "":
+            return render(request, "index.html",
+                          {"error": "用户名或者密码为空"}
+                          )
+        else:
+            user = auth.authenticate(
+            username=username, password=password)
+            print(user)
+            print(type(user))
+            if user is not None:
+                auth.login(request, user)  # 验证登录
+                return render(request, "project_manager.html")
+            else:
+                return render(request, "index.html",
+                              {"error": "用户名或者密码错误"})
 
+ 
